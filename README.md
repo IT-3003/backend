@@ -2,3 +2,5 @@
 
 Team Members
 * Thinula Harischandra - 17478
+* Janindu Hasaranga    - 17472
+* Ruchitha Vithana     - 17450
