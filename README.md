@@ -1,4 +1,4 @@
-# Event Ticket Management System
+# Online Supermarket Shopping Management System
 
 Team Members
 * Thinula Harischandra - 17478
