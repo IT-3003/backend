@@ -1,19 +1,49 @@
 package com.threefour.backend.reviewsandfeedback;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jdk.jfr.Name;
 
 @Entity
 public class ReviewsAndFeedback {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    public String name;
-    public int age;
 
-    // Your other fields, getters, and setters
+    @Id
+    public int id;
+    public int age;
+    public String name;
+
+    public ReviewsAndFeedback(int id, int age, String name) {
+        this.id = id;
+        this.age = age;
+        this.name = name;
+    }
+
+    public ReviewsAndFeedback(){
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
 }
