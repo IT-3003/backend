@@ -2,6 +2,7 @@ package com.threefour.backend.thinula;
 
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -16,6 +17,13 @@ public class ThinulaController {
         int num1 = 10;
         int num2 = 20;
 
+        return ThinulaService.addnumbers(num1, num2);
+    }
+
+    @PostMapping("/adduser/{}")
+    public String ht2(){
+        int num1 = 10;
+        int num2 = 20;
         return ThinulaService.addnumbers(num1, num2);
     }
 
