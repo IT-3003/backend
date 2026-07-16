@@ -11,14 +11,7 @@ public class RuchithaController {
         return "Hello Ruchihta";
     }
 
-    @GetMapping("/getsum")
-    public String nw(){
-        int a = 1;
-        int b = 2;
 
-        return RuchithaService.addnumbers(a,b);
-
-    }
 
 
 }
