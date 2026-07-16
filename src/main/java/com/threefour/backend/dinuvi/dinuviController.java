@@ -10,14 +10,7 @@ public class dinuviController {
         return "hello dinuvi!";
     }
 
-    @GetMapping("/getsum")
-    public String ht(){
-        int num1 = 34;
-        int num2 = 20;
 
-        return dinuviService.addnumbers(num1, num2);
-
-    }
 }
 
 
