@@ -8,14 +8,7 @@ public class AnshuController {
     public String hello(){
         return"Hello Anshu";
 }
-@GetMapping("/getsum")
-    public String ht(){
-        int num1 =50;
-        int num2 = 100;
 
-        return AnshuService.addnumbers(num1,num2);
-
-}
 
 
 
