@@ -19,12 +19,10 @@ public class Branch {
     private Date createdDate;
     private Date updatedDate;
 
-    // Default Constructor
     public Branch() {
 
     }
 
-    // Parameterized Constructor
     public Branch(int branchId, String branchName, String address, String phoneNumber,
                   int managerId, String openingHours, Date createdDate, Date updatedDate) {
         this.branchId = branchId;
@@ -36,8 +34,6 @@ public class Branch {
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
     }
-
-    // Getters and Setters
 
     public int getBranchId() {
         return branchId;
