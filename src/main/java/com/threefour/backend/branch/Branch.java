@@ -4,6 +4,9 @@ import java.util.Date;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Table(name = "branch")
 
 @Entity
 public class Branch {
