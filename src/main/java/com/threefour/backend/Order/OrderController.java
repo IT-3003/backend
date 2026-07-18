@@ -1,10 +1,10 @@
-package com.threefour.backend.ruchitha;
+package com.threefour.backend.Order;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class RuchithaController {
+public class OrderController {
 
     @GetMapping("/rav")
     public String hello(){
@@ -16,7 +16,7 @@ public class RuchithaController {
         int a = 1;
         int b = 2;
 
-        return RuchithaService.addnumbers(a,b);
+        return OrderService.addnumbers(a,b);
 
     }
 
