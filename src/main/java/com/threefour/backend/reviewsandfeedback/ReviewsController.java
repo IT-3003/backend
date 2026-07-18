@@ -9,17 +9,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/reviewsandfeedback")
-public class ReviewsAndFeedbackController {
+public class ReviewsController {
 
-    private final ReviewsAndFeedbackService reviewsandfeedbackService;
+    private final ReviewsService reviewsandfeedbackService;
 
-    public ReviewsAndFeedbackController(ReviewsAndFeedbackService reviewsandfeedbackService){
+    public ReviewsController(ReviewsService reviewsandfeedbackService){
         this.reviewsandfeedbackService = reviewsandfeedbackService ;
     }
 
     @PostMapping("/create")
-    public ResponseEntity<ReviewsAndFeedback> create(@RequestBody ReviewsAndFeedback reviewsandfeedback) {
-        ReviewsAndFeedback savedReviewsAndFeedback = reviewsandfeedbackService.saveReviewsAndFeedback(reviewsandfeedback);
-        return new ResponseEntity<>(savedReviewsAndFeedback, HttpStatus.CREATED);
+    public ResponseEntity<Reviews> create(@RequestBody Reviews reviewsandfeedback) {
+        Reviews savedReviews = reviewsandfeedbackService.saveReviewsAndFeedback(reviewsandfeedback);
+        return new ResponseEntity<>(savedReviews, HttpStatus.CREATED);
     }
 }
