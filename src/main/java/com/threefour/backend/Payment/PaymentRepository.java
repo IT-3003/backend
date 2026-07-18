@@ -1,4 +1,4 @@
-package com.threefour.backend.Janindu;
+package com.threefour.backend.Payment;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
     @Repository
 // Pass your Entity type (Product) and its ID type (Long) into the generic
-    public interface JaninduRepository extends JpaRepository<Janindu, Long> {
+    public interface PaymentRepository extends JpaRepository<Payment, Long> {
         // Spring Boot automatically implements basic database methods here!
     }
 
