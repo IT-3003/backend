@@ -2,9 +2,10 @@ package com.threefour.backend.promotion;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 import java.time.LocalDate;
-
+@Table(name = "promotion")
 @Entity
 public class Promotion {
     @Id
