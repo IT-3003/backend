@@ -4,7 +4,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 // Pass your Entity type (Product) and its ID type (Long) into the generic
-public interface HimandiRepository extends JpaRepository<Himandi, Long> {
+public interface BranchRepository extends JpaRepository<Branch, Long> {
     // Spring Boot automatically implements basic database methods here!
 }
 
