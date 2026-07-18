@@ -1,11 +1,11 @@
-package com.threefour.backend.himandi;
+package com.threefour.backend.branch;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/controller")
+@RequestMapping("/api/branch")
 public class BranchController {
     public BranchController(BranchService branchService) {
         this.branchService = branchService;

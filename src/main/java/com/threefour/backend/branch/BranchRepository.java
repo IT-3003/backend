@@ -1,4 +1,4 @@
-package com.threefour.backend.himandi;
+package com.threefour.backend.branch;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

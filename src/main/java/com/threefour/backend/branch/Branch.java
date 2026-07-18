@@ -1,4 +1,4 @@
-package com.threefour.backend.himandi;
+package com.threefour.backend.branch;
 import java.util.Date;
 
 import jakarta.persistence.Entity;
