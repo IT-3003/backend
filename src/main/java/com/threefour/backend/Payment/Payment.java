@@ -2,27 +2,55 @@ package com.threefour.backend.Payment;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "Payment")
 public class Payment {
-    private final int paymentID;
+
     @Id
     private int paymentId;
-    private int oderId ;
-    private int userId ;
-    private double amount ;
-    private PaymentMethod paymentMethod ;
+
+    private int orderId;
+    private int userId;
+    private double amount;
+
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod;
+
     private String transaction;
-    private PaymentStatus paymentStatus ;
-    private LocalDateTime paymentDate ;
-    private boolean isActive ;
+
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus;
+
+    private LocalDateTime paymentDate;
+
+    private boolean isActive;
 
 
-    public Payment(int paymentId, int oderId, int userId, double amount, PaymentMethod paymentMethod, String transaction, PaymentStatus paymentStatus, LocalDateTime paymentDate, boolean isActive) {
-        this.paymentID = paymentId;
-        this.oderId = oderId;
+    // Required empty constructor for JPA
+    public Payment() {
+
+    }
+
+
+    // Parameterized constructor
+    public Payment(int paymentId,
+                   int orderId,
+                   int userId,
+                   double amount,
+                   PaymentMethod paymentMethod,
+                   String transaction,
+                   PaymentStatus paymentStatus,
+                   LocalDateTime paymentDate,
+                   boolean isActive) {
+
+        this.paymentId = paymentId;
+        this.orderId = orderId;
         this.userId = userId;
         this.amount = amount;
         this.paymentMethod = paymentMethod;
@@ -33,13 +61,14 @@ public class Payment {
     }
 
 
+    // Getters
 
-    public int getPayment() {
+    public int getPaymentId() {
         return paymentId;
     }
 
-    public int getOderId() {
-        return oderId;
+    public int getOrderId() {
+        return orderId;
     }
 
     public int getUserId() {
@@ -70,12 +99,15 @@ public class Payment {
         return isActive;
     }
 
-    public void setPayment(int payment) {
-        this.paymentId = payment;
+
+    // Setters
+
+    public void setPaymentId(int paymentId) {
+        this.paymentId = paymentId;
     }
 
-    public void setOderId(int oderId) {
-        this.oderId = oderId;
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
     }
 
     public void setUserId(int userId) {

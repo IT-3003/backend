@@ -1,4 +1,9 @@
 package com.threefour.backend.Payment;
 
-public class PaymentMethod {
+public enum PaymentMethod {
+
+    CARD,
+    CASH,
+    ONLINE
+
 }

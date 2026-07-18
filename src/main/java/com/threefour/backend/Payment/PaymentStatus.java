@@ -1,4 +1,9 @@
 package com.threefour.backend.Payment;
 
-public class PaymentStatus {
+public enum PaymentStatus {
+
+    PENDING,
+    SUCCESS,
+    FAILED
+
 }
