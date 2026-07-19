@@ -1,4 +1,4 @@
-package com.threefour.backend.Payment;
+package com.threefour.backend.payment;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ public class PaymentController {
 
     @GetMapping("/jdh")
     public String hello(){
-        return " Payment Successful";
+        return " payment Successful";
 
     }
 

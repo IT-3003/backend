@@ -1,4 +1,4 @@
-package com.threefour.backend.Payment;
+package com.threefour.backend.payment;
 
 public enum PaymentMethod {
 

@@ -1,4 +1,4 @@
-package com.threefour.backend.Payment;
+package com.threefour.backend.payment;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -9,7 +9,7 @@ import jakarta.persistence.Enumerated;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Payment")
+@Table(name = "payment")
 public class Payment {
 
     @Id
