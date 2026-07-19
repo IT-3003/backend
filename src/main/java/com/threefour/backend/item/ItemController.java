@@ -1,4 +1,4 @@
-package com.threefour.backend.dinuvi;
+package com.threefour.backend.item;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -6,11 +6,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/dinuvi")
-public class DinuviController {
+public class ItemController {
 
-    private final DinuviService dinuviService;
+    private final ItemService dinuviService;
 
-    public DinuviController(DinuviService dinuviService) {
+    public ItemController(ItemService dinuviService) {
         this.dinuviService = dinuviService;
     }
 
@@ -20,8 +20,8 @@ public class DinuviController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Dinuvi> create(@RequestBody Dinuvi dinuvi) {
-        Dinuvi savedDinuvi = dinuviService.saveDinuvi(dinuvi);
+    public ResponseEntity<Item> create(@RequestBody Item dinuvi) {
+        Item savedDinuvi = dinuviService.saveDinuvi(dinuvi);
         return new ResponseEntity<>(savedDinuvi, HttpStatus.CREATED);
     }
 }
