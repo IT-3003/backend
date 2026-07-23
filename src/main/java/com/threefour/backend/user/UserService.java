@@ -16,9 +16,26 @@ public class UserService {
     }
 
 
-    public User saveThinula(User user) {
+    public User saveUser(User user) {
         // Directly pass the incoming object to the repository to be persisted
         return userRepository.save(user);
     }
+
+    public User getUserById(int id) {
+        // Fetches all columns for the specific primary key
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+    }
+
+    public void deleteUser(int id) {
+        if (!userRepository.existsById(id)) {
+            throw new RuntimeException("User not found with id: " + id);
+        }
+        userRepository.deleteById(id);
+    }
+
+
+
+
 }
 
