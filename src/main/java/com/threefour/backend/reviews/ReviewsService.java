@@ -13,4 +13,10 @@ public class ReviewsService {
     public Reviews saveReviews(Reviews reviews) {
         return reviewsRepository.save(reviews);
     }
+
+    public Reviews getReviewsById(int reviewsId) {
+        // Fetches all columns for the specific primary key
+        return reviewsRepository.findById(reviewsId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + reviewsId));
+    }
 }
