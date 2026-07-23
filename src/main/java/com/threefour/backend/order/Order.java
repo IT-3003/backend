@@ -161,7 +161,5 @@ public class Order {
         this.updatedDate = updatedDate;
     }
 
-    public OrderItem[] getOrderItems() {
-        return new OrderItem[0];
-    }
+
 }
