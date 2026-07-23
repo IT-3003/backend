@@ -160,4 +160,8 @@ public class Order {
     public void setUpdatedDate(Date updatedDate) {
         this.updatedDate = updatedDate;
     }
+
+    public OrderItem[] getOrderItems() {
+        return new OrderItem[0];
+    }
 }

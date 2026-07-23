@@ -83,6 +83,9 @@ public class OrderItem {
     public void setLineTotal(double lineTotal) {
         this.lineTotal = lineTotal;
     }
+
+    public void setOrder(Order order) {
+    }
 }
 
 
