@@ -1,4 +1,4 @@
-package com.threefour.backend.reviewsandfeedback;
+package com.threefour.backend.reviews;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
