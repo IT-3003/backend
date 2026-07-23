@@ -1,2 +1,23 @@
-.env.local
+# Maven build outputs
 target/
+*.class
+*.jar
+*.war
+*.ear
+
+# IDE and Project Settings
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Local env files
+.env.local
+.env
