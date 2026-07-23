@@ -1,8 +1,7 @@
-package com.threefour.backend.reviewsandfeedback;
+package com.threefour.backend.reviews;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import java.time.LocalDateTime;
 
 @Entity
 public class Reviews {

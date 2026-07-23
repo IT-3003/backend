@@ -1,4 +1,4 @@
-package com.threefour.backend.reviewsandfeedback;
+package com.threefour.backend.reviews;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,18 +8,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/reviewsandfeedback")
+@RequestMapping("/api/reviews")
 public class ReviewsController {
 
-    private final ReviewsService reviewsandfeedbackService;
+    private final ReviewsService reviewsService;
 
-    public ReviewsController(ReviewsService reviewsandfeedbackService){
-        this.reviewsandfeedbackService = reviewsandfeedbackService ;
+    public ReviewsController(ReviewsService reviewsService){
+        this.reviewsService = reviewsService ;
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Reviews> create(@RequestBody Reviews reviewsandfeedback) {
-        Reviews savedReviews = reviewsandfeedbackService.saveReviewsAndFeedback(reviewsandfeedback);
+    public ResponseEntity<Reviews> create(@RequestBody Reviews reviews) {
+        Reviews savedReviews = reviewsService.saveReviews(reviews);
         return new ResponseEntity<>(savedReviews, HttpStatus.CREATED);
     }
 }
