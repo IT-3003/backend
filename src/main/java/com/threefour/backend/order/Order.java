@@ -43,4 +43,8 @@ public class Order {
     public void setName(String name){
         this.name = name;
     }
+
+    public OrderItem[] getOrderItems() {
+        return new OrderItem[0];
+    }
 }
