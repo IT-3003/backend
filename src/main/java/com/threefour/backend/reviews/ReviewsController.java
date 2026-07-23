@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 @RestController
 @RequestMapping("/api/reviews")
@@ -28,5 +29,11 @@ public class ReviewsController {
     @GetMapping("/{reviewId}")
     public Reviews getReviewsById(@PathVariable int reviewId) {
         return reviewsService.getReviewsById(reviewId);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteReviews(@PathVariable int id) {
+        reviewsService.deleteReviews(id);
+        return ResponseEntity.ok("Review deleted successfully.");
     }
 }
