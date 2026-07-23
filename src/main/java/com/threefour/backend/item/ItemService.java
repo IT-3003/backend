@@ -1,13 +1,13 @@
-package com.threefour.backend.dinuvi;
+package com.threefour.backend.item;
 
 import org.springframework.stereotype.Service;
 
 @Service
-public class DinuviService {
+public class ItemService {
 
-    private final DinuviRepository dinuviRepository;
+    private final ItemRepository dinuviRepository;
 
-    public DinuviService(DinuviRepository dinuviRepository) {
+    public ItemService(ItemRepository dinuviRepository) {
         this.dinuviRepository = dinuviRepository;
     }
 
@@ -15,7 +15,7 @@ public class DinuviService {
         return "The sum is " + (a + b);
     }
 
-    public Dinuvi saveDinuvi(Dinuvi dinuvi) {
+    public Item saveDinuvi(Item dinuvi) {
         return dinuviRepository.save(dinuvi);
     }
 }

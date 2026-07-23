@@ -1,1 +1,2 @@
-.env.localtarget/
+.env.local
+target/

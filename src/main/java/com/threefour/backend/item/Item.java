@@ -1,4 +1,4 @@
-package com.threefour.backend.dinuvi;
+package com.threefour.backend.item;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -6,7 +6,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "itemms")
-public class Dinuvi {
+public class Item {
 
     @Id
     private Long itemId;
@@ -17,10 +17,10 @@ public class Dinuvi {
 
     private double baseprice;
 
-    public Dinuvi() {
+    public Item() {
     }
 
-    public Dinuvi(Long itemId, String itemName, String category, double baseprice ) {
+    public Item(Long itemId, String itemName, String category, double baseprice ) {
         this.itemId = itemId;
         this.itemName = itemName;
         this.category = category;

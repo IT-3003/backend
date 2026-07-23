@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
     @Repository
 // Pass your Entity type (Product) and its ID type (Long) into the generic
-    public interface PaymentRepository extends JpaRepository<Payment, Long> {
+    public interface PaymentRepository extends JpaRepository<Payment, Integer> {
         // Spring Boot automatically implements basic database methods here!
     }
 

@@ -1,24 +1,23 @@
-package com.threefour.backend.ruchitha;
+package com.threefour.backend.order;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
 @Entity
-public class Ruchitha {
+public class Order {
 
     @Id
     private int id;
     private int age;
     private String name;
 
-    public Ruchitha(int id, int age, String name) {
+    public Order(int id, int age, String name) {
         this.id = id;
         this.age = age;
         this.name = name;
     }
 
-    public Ruchitha(){
-
+    public Order(){
     }
 
     public int getId(){
@@ -33,7 +32,7 @@ public class Ruchitha {
         return age;
     }
 
-    public void setAge(){
+    public void setAge(int age){
         this.age = age;
     }
 
@@ -41,7 +40,7 @@ public class Ruchitha {
         return name;
     }
 
-    public void setName(){
+    public void setName(String name){
         this.name = name;
     }
 }
