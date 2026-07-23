@@ -19,4 +19,8 @@ public class ReviewsService {
         return reviewsRepository.findById(reviewsId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + reviewsId));
     }
+
+    public void deleteReviews(int reviewId) {
+        reviewsRepository.deleteById(reviewId);
+    }
 }
