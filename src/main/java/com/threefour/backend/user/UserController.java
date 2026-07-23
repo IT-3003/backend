@@ -23,8 +23,21 @@ public class UserController {
 
     @PostMapping("/create")
     public ResponseEntity<User> create(@RequestBody User user) {
-        User savedUser = userService.saveThinula(user);
+        User savedUser = userService.saveUser(user);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
+
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable int id) {
+        return userService.getUserById(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable int id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
+
+
 
 }
