@@ -23,4 +23,17 @@ public class ReviewsService {
     public void deleteReviews(int reviewId) {
         reviewsRepository.deleteById(reviewId);
     }
+
+    public Reviews updateReviews(int reviewId, Reviews updatedReview) {
+
+        Reviews existingReview = reviewsRepository.findById(reviewId)
+                .orElseThrow(() -> new RuntimeException("Review not found with id: " + reviewId));
+
+        existingReview.setUserId(updatedReview.getUserId());
+        existingReview.setItemId(updatedReview.getItemId());
+        existingReview.setRating(updatedReview.getRating());
+        existingReview.setComment(updatedReview.getComment());
+
+        return reviewsRepository.save(existingReview);
+    }
 }
