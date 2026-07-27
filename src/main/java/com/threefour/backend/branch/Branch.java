@@ -21,6 +21,15 @@ public class Branch {
     private String openingHours;
     private Date createdDate;
     private Date updatedDate;
+    private boolean isActive = true;
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
 
     public Branch() {
 
