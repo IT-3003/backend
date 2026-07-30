@@ -2,6 +2,9 @@ package com.threefour.backend.item;
 
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
+
 @Service
 public class ItemService {
 
@@ -27,6 +30,10 @@ public class ItemService {
         itemRepository.delete(item);
     }
 
+    public List<Item> getAllItems() {
+        return itemRepository.findAll();
+    }
+
     public Item updateItem(Long id, Item updatedItem) {
 
         Item item = itemRepository.findById(id)
@@ -35,7 +42,13 @@ public class ItemService {
         item.setitemName(updatedItem.getitemName());
         item.setCategory(updatedItem.getCategory());
         item.setBaseprice(updatedItem.getBaseprice());
+        item.setBrand(updatedItem.getBrand());
+        item.setImageUrl(updatedItem.getImageUrl());
+        item.setStockQuantity(updatedItem.getStockQuantity());
+        item.setCostPrice(updatedItem.getCostPrice());
+        item.setDescription(updatedItem.getDescription());
 
         return itemRepository.save(item);
     }
+
 }
