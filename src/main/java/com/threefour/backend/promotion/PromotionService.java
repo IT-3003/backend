@@ -2,6 +2,8 @@ package com.threefour.backend.promotion;
 
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PromotionService {
 
@@ -11,18 +13,19 @@ public class PromotionService {
         this.promotionRepository = promotionRepository;
     }
 
-    // Get Promotion by ID
+    public List<Promotion> getAllPromotions() {
+        return promotionRepository.findAll();
+    }
+
     public Promotion getPromotionById(int promotionId) {
         return promotionRepository.findById(promotionId)
                 .orElseThrow(() -> new RuntimeException("Promotion not found with id: " + promotionId));
     }
 
-    // Create Promotion
     public Promotion savePromotion(Promotion promotion) {
         return promotionRepository.save(promotion);
     }
 
-    // Update Promotion
     public Promotion updatePromotion(int promotionId, Promotion updatedPromotion) {
 
         Promotion existingPromotion = promotionRepository.findById(promotionId)
@@ -34,13 +37,13 @@ public class PromotionService {
         existingPromotion.setDiscountType(updatedPromotion.getDiscountType());
         existingPromotion.setStartDate(updatedPromotion.getStartDate());
         existingPromotion.setEndDate(updatedPromotion.getEndDate());
-        existingPromotion.setItemId(updatedPromotion.getItemId());
+        existingPromotion.setItem(updatedPromotion.getItem());
 
         return promotionRepository.save(existingPromotion);
     }
 
-    // Delete Promotion
     public void deletePromotion(int promotionId) {
+
         if (!promotionRepository.existsById(promotionId)) {
             throw new RuntimeException("Promotion not found with id: " + promotionId);
         }

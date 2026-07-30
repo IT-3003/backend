@@ -1,21 +1,20 @@
 package com.threefour.backend.promotion;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.threefour.backend.item.Item;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
-
 import java.time.LocalDate;
 
-@Table(name = "promotion")
 @Entity
+@Table(name = "promotion")
 public class Promotion {
-    @Id
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Positive(message = "Promotion ID must be greater than 0")
     private int promotionId;
 
@@ -40,12 +39,23 @@ public class Promotion {
     @NotNull(message = "End date is required")
     private LocalDate endDate;
 
-    @Positive(message = "Item ID must be greater than 0")
-    private int itemId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id", nullable = false)
+    @NotNull(message = "Item is required")
+    private Item item;
 
-    public Promotion(int promotionId, String promotionName,
-                     String description, Double discountValue, String discountType,
-                     LocalDate startDate, LocalDate endDate, int itemId) {
+    public Promotion() {
+    }
+
+    public Promotion(int promotionId,
+                     String promotionName,
+                     String description,
+                     Double discountValue,
+                     String discountType,
+                     LocalDate startDate,
+                     LocalDate endDate,
+                     Item item) {
+
         this.promotionId = promotionId;
         this.promotionName = promotionName;
         this.description = description;
@@ -53,11 +63,7 @@ public class Promotion {
         this.discountType = discountType;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.itemId = itemId;
-    }
-
-    public Promotion(){
-
+        this.item = item;
     }
 
     public int getPromotionId() {
@@ -116,11 +122,11 @@ public class Promotion {
         this.endDate = endDate;
     }
 
-    public int getItemId() {
-        return itemId;
+    public Item getItem() {
+        return item;
     }
 
-    public void setItemId(int itemId) {
-        this.itemId = itemId;
+    public void setItem(Item item) {
+        this.item = item;
     }
 }
