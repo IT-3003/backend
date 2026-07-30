@@ -1,6 +1,8 @@
 package com.threefour.backend.user;
 
 import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -9,6 +11,17 @@ public class UserService {
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    public static String addnumbers(int a , int b){
+        return "The sum is "+ (a+b);
+    }
+
+    // Retrieve all users converted to DTOs
+    public List<UserResponse> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(this::convertToResponseDTO)
+                .collect(Collectors.toList());
     }
 
     // Convert User Entity to UserResponse DTO
@@ -61,7 +74,7 @@ public class UserService {
         user.setRole(request.getRole());
         user.setActive(request.isActive());
 
-        // Hash password before saving (e.g. using BCrypt, or plain text here for now)
+        // Set password hash
         if (request.getPassword() != null) {
             user.setPasswordHash(request.getPassword());
         }
@@ -96,6 +109,10 @@ public class UserService {
         }
 
         return userRepository.save(existingUser);
+    }
+
+    public User saveUser(User user) {
+        return userRepository.save(user);
     }
 
     public User getUserById(int id) {

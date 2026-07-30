@@ -3,6 +3,7 @@ package com.threefour.backend.user;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
@@ -12,6 +13,18 @@ public class UserController {
 
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+
+    @GetMapping("/getname")
+    public String hello(){
+
+        return "Thinula";
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
+        List<UserResponse> responses = userService.getAllUsers();
+        return ResponseEntity.ok(responses);
     }
 
     @PostMapping("/create")
