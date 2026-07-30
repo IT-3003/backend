@@ -1,13 +1,17 @@
-package com.threefour.backend.Payment;
+package com.threefour.backend.payment;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated; // Required for Path Variable validations
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid; // Required to trigger request body constraint validations
+import jakarta.validation.constraints.Min; // Required for path variable ranges
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/payment")
+@Validated // Enables method parameter constraints like @Min
 public class PaymentController {
 
     private final PaymentService paymentService;
@@ -19,12 +23,12 @@ public class PaymentController {
     // Test API
     @GetMapping("/hello")
     public String hello() {
-        return "Payment Service Running";
+        return "payment Service Running";
     }
 
-    // Create Payment
+    // Create payment
     @PostMapping("/create")
-    public ResponseEntity<Payment> create(@RequestBody Payment payment) {
+    public ResponseEntity<Payment> create(@Valid @RequestBody Payment payment) { // Added @Valid
         Payment savedPayment = paymentService.savePayment(payment);
         return new ResponseEntity<>(savedPayment, HttpStatus.CREATED);
     }
@@ -36,27 +40,29 @@ public class PaymentController {
         return new ResponseEntity<>(payments, HttpStatus.OK);
     }
 
-    // Get Payment by ID
+    // Get payment by ID
     @GetMapping("/{paymentId}")
-    public ResponseEntity<Payment> getPaymentById(@PathVariable int paymentId) {
+    public ResponseEntity<Payment> getPaymentById(
+            @PathVariable @Min(value = 1, message = "Payment ID must be greater than 0") int paymentId) { // Added @Min
         Payment payment = paymentService.getPaymentById(paymentId);
         return new ResponseEntity<>(payment, HttpStatus.OK);
     }
 
-    // Update Payment
+    // Update payment
     @PutMapping("/{paymentId}")
     public ResponseEntity<Payment> updatePayment(
-            @PathVariable int paymentId,
-            @RequestBody Payment payment) {
+            @PathVariable @Min(value = 1, message = "Payment ID must be greater than 0") int paymentId, // Added @Min
+            @Valid @RequestBody Payment payment) { // Added @Valid
 
         Payment updatedPayment = paymentService.updatePayment(paymentId, payment);
         return new ResponseEntity<>(updatedPayment, HttpStatus.OK);
     }
 
-    // Delete Payment
+    // Delete payment
     @DeleteMapping("/{paymentId}")
-    public ResponseEntity<String> deletePayment(@PathVariable int paymentId) {
+    public ResponseEntity<String> deletePayment(
+            @PathVariable @Min(value = 1, message = "Payment ID must be greater than 0") int paymentId) { // Added @Min
         paymentService.deletePayment(paymentId);
-        return new ResponseEntity<>("Payment deleted successfully.", HttpStatus.OK);
+        return new ResponseEntity<>("payment deleted successfully.", HttpStatus.OK);
     }
 }
