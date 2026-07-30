@@ -1,45 +1,52 @@
-# Database Guidelines for Shared Development
+# Shared Database & Backend Development Guidelines
 
-This document outlines the guidelines for database connection, schema mapping, and coordination across the 7 developer modules (`user`, `order`, `payment`, `promotion`, `reviews`, `branch`, `item`).
+This document serves as the central guide for database connections, table mapping, and code integration across our 7 developer modules (`user`, `order`, `payment`, `promotion`, `reviews`, `branch`, `item`). 
 
 ---
 
-## 1. Centralized Connection & Configuration
-Spring Boot manages the database connection automatically using the settings in `src/main/resources/application.properties`. **Individual module folders do not need to implement custom JDBC connection logic.**
+## 1. How Database Connection Works
+Spring Boot manages the database connection automatically using the settings in `src/main/resources/application.properties`. 
+
+**No individual developer needs to write database connection or session code.**
 
 ### Local vs. Production Configurations
-To avoid overwriting each other's database configurations or accidentally modifying the production database during local testing, we use the `spring-dotenv` dependency.
-
-1. Create a `.env` file at the root of the project (this is ignored in git):
+To avoid overwriting each other's credentials or editing the shared database during local development, we use `.env` files:
+1. Create a `.env` file in your root folder (this file is ignored by Git):
    ```env
    SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/your_local_db
    SPRING_DATASOURCE_USERNAME=your_username
    SPRING_DATASOURCE_PASSWORD=your_password
    ```
-2. In `src/main/resources/application.properties`, connection credentials are bound to these environment variables:
-   ```properties
-   spring.datasource.url=${SPRING_DATASOURCE_URL}
-   spring.datasource.username=${SPRING_DATASOURCE_USERNAME}
-   spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}
-   ```
+2. Spring Boot reads this `.env` automatically via the `spring-dotenv` dependency, binding it to the properties file.
 
 ---
 
 ## 2. Standard 3-Layer JPA Pattern
-Every module should strictly follow the standard three-layer architecture:
+Every developer must follow this architectural layout inside their package folder:
 
-1. **Entity (Model) Layer:** Annotated with `@Entity` and `@Table` (e.g., `Order.java`).
-2. **Repository Layer:** An interface extending `JpaRepository<EntityName, IdType>` annotated with `@Repository` (e.g., `OrderRepository.java`).
-3. **Service Layer:** Business logic class annotated with `@Service` injecting repositories via dependency injection.
+```
+  [Controller] (Handles HTTP requests / JSON)
+       │
+       ▼
+   [Service]   (Handles business logic)
+       │
+       ▼
+  [Repository] (Handles database operations - JpaRepository)
+       │
+       ▼
+   [Entity]    (Maps Java class directly to Database table)
+```
+
+1. **Entity (Model):** Annotate your class with `@Entity` and `@Table` (maps your class columns to database columns).
+2. **Repository:** Create an interface extending `JpaRepository<YourEntity, Integer>` annotated with `@Repository`. *Do not write SQL queries; Spring Boot implements standard CRUD automatically.*
+3. **Service:** Class annotated with `@Service` containing business logic. Inject your repository here.
 
 ---
 
-## 3. Database Schema & Table Naming Rules
-Since all 7 modules will share a single database, coordinate naming to avoid conflicts:
-
-* **Explicit Table Names:** Always use `@Table(name = "table_name")` explicitly. Do not rely on Hibernate's implicit naming. Use plural or specific names (e.g. `users` instead of `user` to avoid SQL keyword collisions).
-* **Column Mapping:** Map columns explicitly using `@Column(name = "column_name")` in `snake_case` style.
-* **ID Strategy:** Agree on standard identifier types (e.g., auto-incrementing integer/bigint):
+## 3. Database Schema Naming Rules
+* **Explicit Tables:** Always name tables explicitly using `@Table(name = "table_name")` in plural (e.g., `users`, `payments`). Avoid SQL keyword collisions.
+* **Column Mapping:** Map database columns using `@Column(name = "column_name")` in `snake_case` matching the PostgreSQL columns.
+* **ID Strategy:** Use `GenerationType.IDENTITY` for auto-incrementing primary keys:
   ```java
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,99 +56,136 @@ Since all 7 modules will share a single database, coordinate naming to avoid con
 
 ---
 
-## 4. Handling Inter-Module Relationships (Foreign Keys)
-Because folders are split among different developers, references between modules can be handled in two ways:
+## 4. How Primary Keys (PK) & Foreign Keys (FK) Link Up
+To keep modules independent and prevent circular dependencies in Java, we link tables using **raw IDs (integers)** instead of full object maps (like `@ManyToOne`).
 
-* **Loose Coupling (Highly Recommended for Team Independence):**
-  Instead of mapping complete entities (e.g., `@ManyToOne User user`), store only the raw ID (`private int userId`). This prevents package circular dependency issues and lets you develop your module independently.
-* **Tight Coupling (JPA Relationships):**
-  If you must use full JPA annotations (e.g., `@OneToMany`, `@ManyToOne`), coordinate directly with the owner of that module to ensure their entity class is ready and stable.
+### Conceptual Database Layout
+```
+  [users Table] (User Module)
+  +------------------+
+  | user_id (PK)  <--+--- Primary Key: Unique identifier for a user.
+  | username         |
+  +------------------+
+          │
+          │ (Links to)
+          ▼
+  [orders Table] (Order Module)
+  +------------------+
+  | order_id (PK)    |
+  | user_id (FK)  ---+--- Foreign Key: Stored as a simple int representing the user.
+  | total_amount     |
+  +------------------+
+```
+
+### Implementing in Java
+1. **In the `user` folder:**
+   ```java
+   @Entity
+   @Table(name = "users")
+   public class User {
+       @Id
+       @GeneratedValue(strategy = GenerationType.IDENTITY)
+       @Column(name = "user_id")
+       private int userId; 
+       // ...
+   }
+   ```
+2. **In the `order` folder:**
+   ```java
+   @Entity
+   @Table(name = "orders")
+   public class Order {
+       @Id
+       @GeneratedValue(strategy = GenerationType.IDENTITY)
+       @Column(name = "order_id")
+       private int orderId;
+
+       @Column(name = "user_id") // Foreign Key referring to users.user_id
+       private int userId; 
+       // ...
+   }
+   ```
 
 ---
 
-## 5. Schema Updates (`ddl-auto`)
-* The configuration currently uses `spring.jpa.hibernate.ddl-auto=update`.
-* **Rule:** Before pushing any code, run the application locally to ensure your new database entities are correctly mapped and do not alter/break tables created by other team members.
+## 5. Non-Database Integration (Service to Service)
+When you need data from another module, **never write database queries referencing their tables.** Instead, import and inject their Service class.
+
+```java
+package com.threefour.backend.order;
+
+import com.threefour.backend.item.ItemService; // Import from other module
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class OrderService {
+
+    @Autowired
+    private ItemService itemService; // Inject the Item Service
+
+    public void verifyAndCalculate(Order order) {
+        // Fetch values via service method exports
+        double price = itemService.getPriceById(order.getItemId());
+    }
+}
+```
 
 ---
 
-## 6. Action Checklist for Each Developer
-To get the database connection up and running for your respective folder (e.g., `user`, `payment`, `promotion`), perform the following steps:
+## 6. Action Blueprint: Exact Task List for Each Developer
 
-1. **Set Up Local Environment Variable:**
-   * Create a file named `.env` in the root project directory (same level as `pom.xml`).
-   * Add your local database connection details (refer to Section 1). This ensures you connect to your own database during development instead of clashing with others.
+Below are the exact requirements and files that each developer must build in their assigned folder:
 
-2. **Define Your Entity (`@Entity`):**
-   * Create your model class in your folder (e.g., `com.threefour.backend.payment.Payment`).
-   * Annotate it with `@Entity` and `@Table(name = "<your_table_name>")`.
-   * Add fields with standard JPA annotations (`@Id`, `@GeneratedValue`, `@Column`).
+### 👤 User Developer (`user` folder)
+* **Entities:** `User.java` (Table: `users`, PK: `user_id`).
+* **Repositories:** `UserRepository.java`.
+* **Services:** `UserService.java`. **Must export these methods for other modules to use:**
+  * `boolean existsById(int userId)` ➔ Checks if a user profile is valid.
+  * `UserResponseDTO getUserById(int userId)` ➔ Returns user details (excluding raw passwords).
+* **DTOs:** Create `UserRequestDTO.java` and `UserResponseDTO.java` to handle request validations and security.
 
-3. **Create Your Repository Interface:**
-   * Create an interface in your folder (e.g., `PaymentRepository`).
-   * Annotate it with `@Repository` and extend `JpaRepository<YourEntity, Integer>`.
-   * **Do not write SQL queries.** Standard CRUD operations (save, find, delete, etc.) are automatically handled by Spring Boot.
+### 🛒 Order Developer (`order` folder - You)
+* **Entities:** `Order.java` (Table: `orders`, PK: `order_id`) and `OrderItem.java` (Table: `order_items`, PK: `order_item_id`).
+* **Repositories:** `OrderRepository.java` and `OrderItemRepository.java`.
+* **Services:** `OrderService.java`. **Must autowire these services to run orders:**
+  * Autowire `UserService` to verify the order creator exists.
+  * Autowire `BranchService` to verify the chosen store branch.
+  * Autowire `ItemService` to verify pricing and deduct items from inventory.
+  * Autowire `PromotionService` to validate coupon codes and apply discounts.
+* **Controllers:** `OrderController.java` to handle checkout HTTP requests.
 
-4. **Inject and Use in Service Layer:**
-   * In your Service class, annotate it with `@Service`.
-   * Inject your repository using `@Autowired` or constructor injection.
-   * Call repository methods (e.g., `paymentRepository.save(payment)`) to execute database operations.
+### 💳 Payment Developer (`payment` folder)
+* **Entities:** `Payment.java` (Table: `payments`, PK: `payment_id`).
+* **Enums:** `PaymentStatus.java` (`PENDING`, `COMPLETED`, `FAILED`).
+* **Repositories:** `PaymentRepository.java`.
+* **Services:** `PaymentService.java`. **Must export these methods:**
+  * `Payment createPayment(double amount, String method)` ➔ Logs a new transaction.
+  * `boolean isPaymentSuccessful(int paymentId)` ➔ Tells the Order module if an order is paid.
 
-5. **Coordinate Shared Keys:**
-   * If your entity references another developer's entity (e.g., `Order` referencing `User`), use the loose coupling approach by saving the ID (`userId`) as a primitive integer. Coordinate the column name mapping (e.g., `user_id`) to ensure they match up when joining tables.
+### 🏷️ Promotion Developer (`promotion` folder)
+* **Entities:** `Promotion.java` / `Coupon.java` (Table: `promotions`, PK: `promotion_id`).
+* **Repositories:** `PromotionRepository.java` (must support finding by code: `findByCouponCode(String code)`).
+* **Services:** `PromotionService.java`. **Must export these methods:**
+  * `double getDiscount(String couponCode, double orderSubtotal)` ➔ Validates a code and returns the discount amount.
 
----
+### ✍️ Reviews Developer (`reviews` folder)
+* **Entities:** `Review.java` (Table: `reviews`, PK: `review_id`). Stores foreign keys: `user_id` and `item_id`.
+* **Repositories:** `ReviewRepository.java` (must support `List<Review> findByItemId(int itemId)`).
+* **Services:** `ReviewService.java`. **Must autowire:**
+  * Inject `UserService` to verify that the reviewer exists.
+  * Inject `ItemService` to verify the item being reviewed exists.
 
-## 7. Folder-Specific Blueprint (The 7 Modules)
-Here is the breakdown of what each developer should implement in their respective package folder:
+### 🏢 Branch Developer (`branch` folder)
+* **Entities:** `Branch.java` (Table: `branches`, PK: `branch_id`).
+* **Repositories:** `BranchRepository.java`.
+* **Services:** `BranchService.java`. **Must export these methods:**
+  * `boolean existsById(int branchId)` ➔ Tells the Order module if a branch is valid.
 
-### 1. User (`com.threefour.backend.user`)
-* **Entity Name:** `User`
-* **Table Name:** `users` (avoid using the SQL keyword `user`)
-* **Primary Key:** `user_id` (Integer / Serial)
-* **Key Fields:** `username`, `email`, `password`, `role`, `phoneNumber`
-* **Database Role:** This is a core lookup entity. Other modules (like `order` and `reviews`) will store `userId` as a foreign key reference.
-
-### 2. Order (`com.threefour.backend.order`)
-* **Entity Names:** `Order` and `OrderItem` (One-to-Many relationship)
-* **Table Names:** `orders` and `order_items`
-* **Primary Keys:** `order_id` and `order_item_id`
-* **Integration References:** Stores `userId` (from User), `branchId` (from Branch), and `paymentId` (from Payment) as standard integer fields.
-* **Key Fields:** `totalAmount`, `status` (Enum), `deliveryAddress`, `orderDate`
-
-### 3. Payment (`com.threefour.backend.payment`)
-* **Entity Name:** `Payment`
-* **Table Name:** `payments`
-* **Primary Key:** `payment_id`
-* **Key Fields:** `paymentMethod` (e.g., Card, Cash), `amount`, `status` (e.g., Pending, Completed), `transactionId`
-* **Database Role:** Once a payment is created, its `paymentId` is shared back with the `order` module.
-
-### 4. Promotion (`com.threefour.backend.promotion`)
-* **Entity Name:** `Promotion` or `Coupon`
-* **Table Name:** `promotions` / `coupons`
-* **Primary Key:** `promotion_id`
-* **Key Fields:** `couponCode` (String, unique index), `discountValue`, `discountType` (e.g., percentage, flat), `expiryDate`
-* **Database Role:** The `order` module checks this table using the `couponCode` to calculate discounts.
-
-### 5. Reviews (`com.threefour.backend.reviews`)
-* **Entity Name:** `Review`
-* **Table Name:** `reviews`
-* **Primary Key:** `review_id`
-* **Key Fields:** `rating` (1–5), `comment`, `createdDate`
-* **Integration References:** Stores `userId` (from User) and `itemId` (from Item) or `orderId` (from Order) as foreign keys to track what is being reviewed and by whom.
-
-### 6. Branch (`com.threefour.backend.branch`)
-* **Entity Name:** `Branch`
-* **Table Name:** `branches`
-* **Primary Key:** `branch_id`
-* **Key Fields:** `branchName`, `location`, `contactNumber`
-* **Database Role:** Used by the `order` module to assign where the order was placed or will be fulfilled.
-
-### 7. Item (`com.threefour.backend.item`)
-* **Entity Name:** `Item` or `Product`
-* **Table Name:** `items`
-* **Primary Key:** `item_id`
-* **Key Fields:** `name`, `price`, `description`, `stockQuantity`, `category`
-* **Database Role:** Referenced inside `order_items` (under the `order` module) via `itemId` to record which items are part of an order.
-
-
+### 🍔 Item Developer (`item` folder)
+* **Entities:** `Item.java` / `Product.java` (Table: `items`, PK: `item_id`).
+* **Repositories:** `ItemRepository.java`.
+* **Services:** `ItemService.java`. **Must export these methods:**
+  * `boolean existsById(int itemId)` ➔ Verifies an item exists.
+  * `double getPriceById(int itemId)` ➔ Supplies the price to the Order module.
+  * `boolean checkAndReduceStock(int itemId, int quantity)` ➔ Checks stock availability and decreases inventory count during checkout.
