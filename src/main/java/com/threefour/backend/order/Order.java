@@ -6,6 +6,10 @@ import jakarta.validation.constraints.*;
 import java.util.Date;
 import java.util.List;
 
+import com.threefour.backend.user.User;
+import com.threefour.backend.branch.Branch;
+import com.threefour.backend.Payment.Payment;
+
 @Entity
 @Table(name = "orders")
 public class Order {
@@ -15,9 +19,11 @@ public class Order {
     private int orderId;
 
     @Min(value = 1, message = "User ID must be a positive integer")
+    @Column(name = "user_id", insertable = false, updatable = false)
     private int userId;
 
     @Min(value = 1, message = "Branch ID must be a positive integer")
+    @Column(name = "branch_id", insertable = false, updatable = false)
     private int branchId;
 
     @NotEmpty(message = "Order must contain at least one item")
@@ -45,7 +51,20 @@ public class Order {
     private String deliveryAddress;
 
     @Min(value = 1, message = "Payment ID must be a positive integer")
+    @Column(name = "payment_id", insertable = false, updatable = false)
     private int paymentId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "branch_id", nullable = false)
+    private Branch branch;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "payment_id")
+    private Payment payment;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date orderDate;
@@ -178,5 +197,29 @@ public class Order {
 
     public void setUpdatedDate(Date updatedDate) {
         this.updatedDate = updatedDate;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Branch getBranch() {
+        return branch;
+    }
+
+    public void setBranch(Branch branch) {
+        this.branch = branch;
+    }
+
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
     }
 }
