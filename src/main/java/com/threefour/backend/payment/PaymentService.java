@@ -1,7 +1,6 @@
-package com.threefour.backend.Payment;
+package com.threefour.backend.payment;
 
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -22,7 +21,7 @@ public class PaymentService {
     public Payment getPaymentById(int paymentId) {
         return paymentRepository.findById(paymentId)
                 .orElseThrow(() ->
-                        new RuntimeException("Payment not found with id: " + paymentId));
+                        new PaymentNotFoundException("Payment not found with id: " + paymentId));
     }
 
     // Read All
@@ -32,21 +31,18 @@ public class PaymentService {
 
     // Update
     public Payment updatePayment(int paymentId, Payment payment) {
-
         if (!paymentRepository.existsById(paymentId)) {
-            throw new RuntimeException("Payment not found.");
+            throw new PaymentNotFoundException("Payment not found with id: " + paymentId);
         }
 
         payment.setPaymentId(paymentId);
-
         return paymentRepository.save(payment);
     }
 
     // Delete
     public void deletePayment(int paymentId) {
-
         if (!paymentRepository.existsById(paymentId)) {
-            throw new RuntimeException("Payment not found.");
+            throw new PaymentNotFoundException("Payment not found with id: " + paymentId);
         }
 
         paymentRepository.deleteById(paymentId);
