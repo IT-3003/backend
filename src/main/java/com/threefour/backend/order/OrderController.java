@@ -20,9 +20,19 @@ public class OrderController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Order> create(@RequestBody Order order) {
-        Order savedOrder = orderService.saveRuchitha(order);
-        return new ResponseEntity<>(savedOrder, HttpStatus.CREATED);
+    public ResponseEntity<?> create(@RequestBody Order order) {
+        try {
+            Order savedOrder = orderService.saveRuchitha(order);
+            return new ResponseEntity<>(savedOrder, HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Throwable rootCause = e;
+            while (rootCause.getCause() != null && rootCause.getCause() != rootCause) {
+                rootCause = rootCause.getCause();
+            }
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error creating order: " + rootCause.getMessage());
+        }
     }
 
     @GetMapping("/{id}")

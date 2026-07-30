@@ -9,12 +9,14 @@ import java.util.List;
 public class Order {
 
     @Id
+    @Column(name = "order_id")
     private int orderId;
 
     private int userId;
     private int branchId;
 
     @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_id")
     private List<OrderItem> orderItems;
 
     private double subtotal;
@@ -38,10 +40,10 @@ public class Order {
     }
 
     public Order(int orderId, int userId, int branchId, List<OrderItem> orderItems,
-                 double subtotal, double discountAmount, String couponCode,
-                 double totalAmount, OrderStatus status,
-                 String deliveryAddress, int paymentId,
-                 Date orderDate, Date updatedDate) {
+            double subtotal, double discountAmount, String couponCode,
+            double totalAmount, OrderStatus status,
+            String deliveryAddress, int paymentId,
+            Date orderDate, Date updatedDate) {
         this.orderId = orderId;
         this.userId = userId;
         this.branchId = branchId;
@@ -160,6 +162,5 @@ public class Order {
     public void setUpdatedDate(Date updatedDate) {
         this.updatedDate = updatedDate;
     }
-
 
 }
