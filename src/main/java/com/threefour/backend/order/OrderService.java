@@ -16,8 +16,10 @@ public class OrderService {
 
     public Order saveRuchitha(Order order) {
 
-        for(OrderItem item : order.getOrderItems()) {
-            item.setOrder(order);
+        if (order.getOrderItems() != null) {
+            for(OrderItem item : order.getOrderItems()) {
+                item.setOrder(order);
+            }
         }
 
         return orderRepository.save(order);

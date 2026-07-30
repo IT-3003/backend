@@ -4,6 +4,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/item")
 public class ItemController {
@@ -23,6 +27,10 @@ public class ItemController {
     public ResponseEntity<Item> create(@RequestBody Item item) {
         Item savedDinuvi = itemService.saveItem(item);
         return new ResponseEntity<>(savedDinuvi, HttpStatus.CREATED);
+    }
+    @GetMapping("/all")
+    public List<Item> getAllItems() {
+        return itemService.getAllItems();
     }
 
     @GetMapping("/{id}")
