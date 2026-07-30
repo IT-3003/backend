@@ -4,19 +4,31 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.*;
 
 @Entity
 @Table(name = "order_item")
 public class OrderItem {
     @Id
-    private int orderItemId;      // Unique line-item ID
+    private int orderItemId;
+
     @Column(name = "order_id", insertable = false, updatable = false)
-    private int orderId;          // FK -> parent Order
-    private int productId;        // FK -> Item (from Items Management)
-    private String productName;   // Snapshot of name at order time
-    private int quantity;         // Quantity ordered
-    private double unitPrice;     // Snapshot of price at order time (protects against later price changes)
-    private double lineTotal;     // quantity * unitPrice
+    private int orderId;
+
+    @Min(value = 1, message = "Product ID must be a positive integer")
+    private int productId;
+
+    @NotBlank(message = "Product name cannot be empty")
+    private String productName;
+
+    @Min(value = 1, message = "Quantity must be at least 1")
+    private int quantity;
+
+    @Positive(message = "Unit price must be greater than zero")
+    private double unitPrice;
+
+    @PositiveOrZero(message = "Line total cannot be negative")
+    private double lineTotal;
 
     public OrderItem() {
     }
@@ -90,5 +102,3 @@ public class OrderItem {
     public void setOrder(Order order) {
     }
 }
-
-

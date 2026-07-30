@@ -1,6 +1,8 @@
 package com.threefour.backend.order;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import java.util.Date;
 import java.util.List;
 
@@ -12,22 +14,37 @@ public class Order {
     @Column(name = "order_id")
     private int orderId;
 
+    @Min(value = 1, message = "User ID must be a positive integer")
     private int userId;
+
+    @Min(value = 1, message = "Branch ID must be a positive integer")
     private int branchId;
 
+    @NotEmpty(message = "Order must contain at least one item")
+    @Valid // Critical for nested validation of items inside the list
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")
     private List<OrderItem> orderItems;
 
+    @PositiveOrZero(message = "Subtotal cannot be negative")
     private double subtotal;
+
+    @PositiveOrZero(message = "Discount amount cannot be negative")
     private double discountAmount;
+
     private String couponCode;
+
+    @Positive(message = "Total amount must be greater than zero")
     private double totalAmount;
 
+    @NotNull(message = "Order status is required")
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
+    @NotBlank(message = "Delivery address cannot be blank")
     private String deliveryAddress;
+
+    @Min(value = 1, message = "Payment ID must be a positive integer")
     private int paymentId;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -40,10 +57,10 @@ public class Order {
     }
 
     public Order(int orderId, int userId, int branchId, List<OrderItem> orderItems,
-            double subtotal, double discountAmount, String couponCode,
-            double totalAmount, OrderStatus status,
-            String deliveryAddress, int paymentId,
-            Date orderDate, Date updatedDate) {
+                 double subtotal, double discountAmount, String couponCode,
+                 double totalAmount, OrderStatus status,
+                 String deliveryAddress, int paymentId,
+                 Date orderDate, Date updatedDate) {
         this.orderId = orderId;
         this.userId = userId;
         this.branchId = branchId;
@@ -162,5 +179,4 @@ public class Order {
     public void setUpdatedDate(Date updatedDate) {
         this.updatedDate = updatedDate;
     }
-
 }
