@@ -5,9 +5,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import jakarta.validation.Valid;
+import org.springframework.validation.annotation.Validated;
 
 @RestController
 @RequestMapping("/api/branch")
+@Validated
 public class BranchController {
     public BranchController(BranchService branchService) {
         this.branchService = branchService;
@@ -21,7 +24,7 @@ public class BranchController {
         return "Hello Himandiiiiiii";
     }
     @PostMapping("/create")
-    public ResponseEntity<Branch> create(@RequestBody Branch branch) {
+    public ResponseEntity<Branch> create(@Valid @RequestBody Branch branch) {
         Branch savedBranch = branchService.savebranch(branch);
         return new ResponseEntity<>(savedBranch, HttpStatus.CREATED);
     }
@@ -41,7 +44,7 @@ public class BranchController {
 
         @PutMapping("/{branchid}")
         public Branch updateBranch(@PathVariable int branchid,
-                                   @RequestBody Branch branch) {
+                                   @Valid @RequestBody Branch branch) {
 
             return branchService.updateBranch(branchid, branch);
         }
