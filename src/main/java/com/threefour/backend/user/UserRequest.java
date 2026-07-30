@@ -1,6 +1,7 @@
 package com.threefour.backend.user;
 
 public class UserRequest {
+    private int id;
     private String type; // "customer", "staff", or "admin"
     private String firstName;
     private String lastName;
@@ -16,6 +17,9 @@ public class UserRequest {
     private String position;     // For Staff
 
     // Getters and Setters
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+
     public String getType() { return type; }
     public void setType(String type) { this.type = type; }
 

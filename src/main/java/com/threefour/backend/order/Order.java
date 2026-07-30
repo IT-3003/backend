@@ -6,12 +6,14 @@ import jakarta.validation.constraints.*;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.threefour.backend.user.User;
 import com.threefour.backend.branch.Branch;
 import com.threefour.backend.payment.Payment;
 
 @Entity
 @Table(name = "orders")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Order {
 
     @Id

@@ -54,6 +54,7 @@ public class UserService {
         }
 
         // Map basic fields
+        user.setId(request.getId() == 0 ? (int)(Math.random() * 900000 + 100000) : request.getId());
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setEmail(request.getEmail());

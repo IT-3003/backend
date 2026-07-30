@@ -1,5 +1,6 @@
 package com.threefour.backend.promotion;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.threefour.backend.item.Item;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "promotion")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Promotion {
 
     @Id

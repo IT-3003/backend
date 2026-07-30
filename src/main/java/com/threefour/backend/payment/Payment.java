@@ -1,5 +1,7 @@
 package com.threefour.backend.payment;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.threefour.backend.order.Order;
 import com.threefour.backend.user.User;
 import jakarta.persistence.*;
@@ -9,6 +11,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "payment")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Payment {
 
     @Id
@@ -19,6 +22,7 @@ public class Payment {
     @NotNull(message = "Order is required")
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
+    @JsonIgnore
     private Order order;
 
     @NotNull(message = "User is required")

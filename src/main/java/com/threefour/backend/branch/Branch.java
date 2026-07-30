@@ -1,5 +1,6 @@
 package com.threefour.backend.branch;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Date;
 
 import jakarta.persistence.Entity;
@@ -12,6 +13,7 @@ import jakarta.validation.constraints.Size;
 
 @Table(name = "branch")
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Branch {
 
     @Id
