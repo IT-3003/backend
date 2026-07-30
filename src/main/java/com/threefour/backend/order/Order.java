@@ -8,7 +8,7 @@ import java.util.List;
 
 import com.threefour.backend.user.User;
 import com.threefour.backend.branch.Branch;
-import com.threefour.backend.Payment.Payment;
+import com.threefour.backend.payment.Payment;
 
 @Entity
 @Table(name = "orders")
