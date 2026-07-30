@@ -110,4 +110,8 @@ public abstract class User {
     public void setActive(boolean active) {
         this.active = active;
     }
+
+    public void setUserId(Integer userId) {
+
+    }
 }

@@ -1,6 +1,8 @@
 package com.threefour.backend.payment;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
@@ -13,6 +15,7 @@ public class PaymentService {
     }
 
     // Create
+    @Transactional
     public Payment savePayment(Payment payment) {
         return paymentRepository.save(payment);
     }
@@ -30,21 +33,28 @@ public class PaymentService {
     }
 
     // Update
-    public Payment updatePayment(int paymentId, Payment payment) {
-        if (!paymentRepository.existsById(paymentId)) {
-            throw new PaymentNotFoundException("Payment not found with id: " + paymentId);
-        }
+    @Transactional
+    public Payment updatePayment(int paymentId, Payment paymentDetails) {
+        Payment existingPayment = getPaymentById(paymentId);
 
-        payment.setPaymentId(paymentId);
-        return paymentRepository.save(payment);
+        existingPayment.setOrder(paymentDetails.getOrder());
+        existingPayment.setUser(paymentDetails.getUser());
+        existingPayment.setAmount(paymentDetails.getAmount());
+        existingPayment.setPaymentMethod(paymentDetails.getPaymentMethod());
+        existingPayment.setTransaction(paymentDetails.getTransaction());
+        existingPayment.setPaymentStatus(paymentDetails.getPaymentStatus());
+        existingPayment.setPaymentDate(paymentDetails.getPaymentDate());
+        existingPayment.setActive(paymentDetails.isActive());
+
+        return paymentRepository.save(existingPayment);
     }
 
-    // Delete
+    // Soft Delete
+    @Transactional
     public void deletePayment(int paymentId) {
-        if (!paymentRepository.existsById(paymentId)) {
-            throw new PaymentNotFoundException("Payment not found with id: " + paymentId);
-        }
+        Payment existingPayment = getPaymentById(paymentId);
 
-        paymentRepository.deleteById(paymentId);
+        existingPayment.setActive(false);
+        paymentRepository.save(existingPayment);
     }
 }

@@ -1,7 +1,9 @@
 package com.threefour.backend.payment;
 
+import com.threefour.backend.order.Order;
+import com.threefour.backend.user.User;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*; // Added for validation constraints
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
 
@@ -10,25 +12,24 @@ import java.time.LocalDateTime;
 public class Payment {
 
     @Id
-    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
-    @jakarta.persistence.Column(name = "payment_id") 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "payment_id")
     private int paymentId;
 
+    @NotNull(message = "Order is required")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
 
-    @NotNull(message = "Order ID is required")
-    @Positive(message = "Order ID must be a positive number")
-    @Column(name = "order_id")
-    private Integer orderId; // Updated to Integer wrapper
-
-    @NotNull(message = "User ID is required")
-    @Positive(message = "User ID must be a positive number")
-    @Column(name = "user_id")
-    private Integer userId; // Updated to Integer wrapper
+    @NotNull(message = "User is required")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @NotNull(message = "Amount is required")
     @Positive(message = "Amount must be greater than zero")
     @Column(name = "amount")
-    private Double amount; // Updated to Double wrapper
+    private Double amount;
 
     @NotNull(message = "Payment method is required")
     @Enumerated(EnumType.STRING)
@@ -57,8 +58,8 @@ public class Payment {
 
     // Parameterized constructor
     public Payment(int paymentId,
-                   Integer orderId,
-                   Integer userId,
+                   Order order,
+                   User user,
                    Double amount,
                    PaymentMethod paymentMethod,
                    String transaction,
@@ -67,8 +68,8 @@ public class Payment {
                    boolean isActive) {
 
         this.paymentId = paymentId;
-        this.orderId = orderId;
-        this.userId = userId;
+        this.order = order;
+        this.user = user;
         this.amount = amount;
         this.paymentMethod = paymentMethod;
         this.transaction = transaction;
@@ -79,8 +80,8 @@ public class Payment {
 
     // Getters
     public int getPaymentId() { return paymentId; }
-    public Integer getOrderId() { return orderId; }
-    public Integer getUserId() { return userId; }
+    public Order getOrder() { return order; }
+    public User getUser() { return user; }
     public Double getAmount() { return amount; }
     public PaymentMethod getPaymentMethod() { return paymentMethod; }
     public String getTransaction() { return transaction; }
@@ -90,8 +91,8 @@ public class Payment {
 
     // Setters
     public void setPaymentId(int paymentId) { this.paymentId = paymentId; }
-    public void setOrderId(Integer orderId) { this.orderId = orderId; }
-    public void setUserId(Integer userId) { this.userId = userId; }
+    public void setOrder(Order order) { this.order = order; }
+    public void setUser(User user) { this.user = user; }
     public void setAmount(Double amount) { this.amount = amount; }
     public void setPaymentMethod(PaymentMethod paymentMethod) { this.paymentMethod = paymentMethod; }
     public void setTransaction(String transaction) { this.transaction = transaction; }
