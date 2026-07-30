@@ -18,6 +18,9 @@ public class OrderItem {
     private double unitPrice;     // Snapshot of price at order time (protects against later price changes)
     private double lineTotal;     // quantity * unitPrice
 
+    public OrderItem() {
+    }
+
     public OrderItem(int orderItemId, int orderId, int productId, String productName, int quantity, double unitPrice, double lineTotal) {
         this.orderItemId = orderItemId;
         this.orderId = orderId;
