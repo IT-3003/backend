@@ -116,4 +116,16 @@ public class UserService {
                 .map(this::convertToResponseDTO)
                 .collect(java.util.stream.Collectors.toList());
     }
+
+    public UserResponse login(String email, String password) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Invalid credentials: User not found"));
+        
+        // Simple plain-text password comparison
+        if (user.getPasswordHash() == null || !user.getPasswordHash().equals(password)) {
+            throw new RuntimeException("Invalid credentials: Passwords do not match");
+        }
+        
+        return convertToResponseDTO(user);
+    }
 }
