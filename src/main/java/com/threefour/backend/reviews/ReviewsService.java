@@ -36,4 +36,8 @@ public class ReviewsService {
 
         return reviewsRepository.save(existingReview);
     }
+
+    public java.util.List<Reviews> getAllReviews() {
+        return reviewsRepository.findAll();
+    }
 }

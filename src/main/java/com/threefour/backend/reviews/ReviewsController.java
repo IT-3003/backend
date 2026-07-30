@@ -44,4 +44,9 @@ public class ReviewsController {
 
         return reviewsService.updateReviews(reviewId, reviews);
     }
+
+    @GetMapping
+    public ResponseEntity<java.util.List<Reviews>> getAllReviews() {
+        return ResponseEntity.ok(reviewsService.getAllReviews());
+    }
 }

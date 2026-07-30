@@ -109,4 +109,10 @@ public class UserService {
         }
         userRepository.deleteById(id);
     }
+
+    public java.util.List<UserResponse> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(this::convertToResponseDTO)
+                .collect(java.util.stream.Collectors.toList());
+    }
 }
