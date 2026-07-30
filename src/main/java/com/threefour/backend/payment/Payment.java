@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 public class Payment {
 
     @Id
-    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY) // Tells Hibernate to let PostgreSQL handle auto-increment
-    @jakarta.persistence.Column(name = "payment_id") // Maps to your database primary key column
+    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+    @jakarta.persistence.Column(name = "payment_id") 
     private int paymentId;
 
 
