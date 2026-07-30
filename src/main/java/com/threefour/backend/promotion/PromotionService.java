@@ -2,21 +2,29 @@ package com.threefour.backend.promotion;
 
 import org.springframework.stereotype.Service;
 
-
 @Service
 public class PromotionService {
-    public final PromotionRepository anshuRepository;
 
+    private final PromotionRepository promotionRepository;
 
-    public PromotionService(PromotionRepository anshuRepository) {
-        this.anshuRepository = anshuRepository;
+    public PromotionService(PromotionRepository promotionRepository) {
+        this.promotionRepository = promotionRepository;
     }
-    public static String addnumbers(int a, int b) {
-    return "The sum is "+(a+b);
+
+    public Promotion getPromotionById(int promotionId) {
+        return promotionRepository.findById(promotionId)
+                .orElseThrow(() -> new RuntimeException("Promotion not found with id: " + promotionId));
     }
-    public Promotion saveAnshu(Promotion anshu){
-        // Directly pass the incoming object to the repository to be persisted
-        return anshuRepository.save(anshu);
+
+    public Promotion savePromotion(Promotion promotion) {
+        return promotionRepository.save(promotion);
+    }
+
+    public void deletePromotion(int promotionId) {
+        if (!promotionRepository.existsById(promotionId)) {
+            throw new RuntimeException("Promotion not found with id: " + promotionId);
+        }
+        promotionRepository.deleteById(promotionId);
     }
 }
 

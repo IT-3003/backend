@@ -13,4 +13,27 @@ public class ReviewsService {
     public Reviews saveReviews(Reviews reviews) {
         return reviewsRepository.save(reviews);
     }
+
+    public Reviews getReviewsById(int reviewsId) {
+        // Fetches all columns for the specific primary key
+        return reviewsRepository.findById(reviewsId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + reviewsId));
+    }
+
+    public void deleteReviews(int reviewId) {
+        reviewsRepository.deleteById(reviewId);
+    }
+
+    public Reviews updateReviews(int reviewId, Reviews updatedReview) {
+
+        Reviews existingReview = reviewsRepository.findById(reviewId)
+                .orElseThrow(() -> new RuntimeException("Review not found with id: " + reviewId));
+
+        existingReview.setUserId(updatedReview.getUserId());
+        existingReview.setItemId(updatedReview.getItemId());
+        existingReview.setRating(updatedReview.getRating());
+        existingReview.setComment(updatedReview.getComment());
+
+        return reviewsRepository.save(existingReview);
+    }
 }

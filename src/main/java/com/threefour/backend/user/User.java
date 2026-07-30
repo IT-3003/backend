@@ -1,12 +1,25 @@
 package com.threefour.backend.user;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-abstract class User {
-
+@DiscriminatorColumn(name = "user_type")
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type" // Must match the JSON key in Postman
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = Customer.class, name = "customer"),
+        @JsonSubTypes.Type(value = Staff.class, name = "staff"),
+        @JsonSubTypes.Type(value = Admin.class, name = "admin")
+})
+public abstract class User {
+    // Keep your existing fields and methods unchanged
 
     @Id
     private int id;
