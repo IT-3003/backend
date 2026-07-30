@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/order")
@@ -21,6 +22,11 @@ public class OrderController {
     @GetMapping("/rav")
     public String hello() {
         return "Hello Ruchitha";
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Order>> getAllOrders() {
+        return ResponseEntity.ok(orderService.getAllOrders());
     }
 
     @PostMapping("/create")
@@ -41,21 +47,16 @@ public class OrderController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Order> getOrderById(@PathVariable @Min(1) int id) {
-
         Order order = orderService.getOrderById(id);
-
         if (order == null) {
             return ResponseEntity.notFound().build();
         }
-
         return ResponseEntity.ok(order);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteOrder(@PathVariable @Min(1) int id) {
-
         orderService.deleteOrder(id);
-
         return ResponseEntity.ok("Order deleted successfully.");
     }
 }
