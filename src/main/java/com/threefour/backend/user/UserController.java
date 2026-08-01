@@ -1,6 +1,5 @@
 package com.threefour.backend.user;
 
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,21 +14,25 @@ public class UserController {
         this.userService = userService;
     }
 
-
-    @GetMapping("/getname")
-    public String hello(){
-        return "Thinula";
-    }
-
     @PostMapping("/create")
-    public ResponseEntity<User> create(@RequestBody User user) {
-        User savedUser = userService.saveUser(user);
-        return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+    public ResponseEntity<UserResponse> create(@RequestBody UserRequest userRequest) {
+        User savedUser = userService.createUser(userRequest);
+        UserResponse response = userService.convertToResponseDTO(savedUser);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable int id) {
-        return userService.getUserById(id);
+    public ResponseEntity<UserResponse> getUserById(@PathVariable int id) {
+        User user = userService.getUserById(id);
+        UserResponse response = userService.convertToResponseDTO(user);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResponse> updateUser(@PathVariable int id, @RequestBody UserRequest userRequest) {
+        User updatedUser = userService.updateUser(id, userRequest);
+        UserResponse response = userService.convertToResponseDTO(updatedUser);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
@@ -38,10 +41,18 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable int id, @RequestBody User userDetails) {
-        User updatedUser = userService.updateUser(id, userDetails);
-        return ResponseEntity.ok(updatedUser);
+    @GetMapping
+    public ResponseEntity<java.util.List<UserResponse>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<UserResponse> login(@RequestBody LoginRequest loginRequest) {
+        try {
+            UserResponse response = userService.login(loginRequest.getEmail(), loginRequest.getPassword());
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
 }

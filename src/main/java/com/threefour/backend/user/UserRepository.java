@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 // Pass your Entity type (Product) and its ID type (Long) into the generic
 public interface UserRepository extends JpaRepository<User, Integer> {
     // Spring Boot automatically implements basic database methods here!
+    java.util.Optional<User> findByEmail(String email);
 }

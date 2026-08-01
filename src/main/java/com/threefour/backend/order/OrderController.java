@@ -1,11 +1,16 @@
 package com.threefour.backend.order;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/order")
+@Validated // Enables validation for primitive parameters like @PathVariable
 public class OrderController {
 
     private final OrderService orderService;
@@ -19,8 +24,13 @@ public class OrderController {
         return "Hello Ruchitha";
     }
 
+    @GetMapping
+    public ResponseEntity<List<Order>> getAllOrders() {
+        return ResponseEntity.ok(orderService.getAllOrders());
+    }
+
     @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestBody Order order) {
+    public ResponseEntity<?> create(@Valid @RequestBody Order order) {
         try {
             Order savedOrder = orderService.saveRuchitha(order);
             return new ResponseEntity<>(savedOrder, HttpStatus.CREATED);
@@ -36,26 +46,17 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Order> getOrderById(@PathVariable int id) {
-
-        Order order = orderService.getOrderById((int) id);
-
+    public ResponseEntity<Order> getOrderById(@PathVariable @Min(1) int id) {
+        Order order = orderService.getOrderById(id);
         if (order == null) {
             return ResponseEntity.notFound().build();
         }
-
         return ResponseEntity.ok(order);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteOrder(@PathVariable int id) {
-
+    public ResponseEntity<String> deleteOrder(@PathVariable @Min(1) int id) {
         orderService.deleteOrder(id);
-
         return ResponseEntity.ok("Order deleted successfully.");
     }
-
-
-
-
 }
