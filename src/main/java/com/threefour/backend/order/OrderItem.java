@@ -12,6 +12,8 @@ import jakarta.validation.constraints.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.threefour.backend.item.Item;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 
 @Entity
@@ -37,7 +39,8 @@ public class OrderItem {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "product_id", nullable = true)
+    @NotFound(action = NotFoundAction.IGNORE)
     private Item product;
 
 
