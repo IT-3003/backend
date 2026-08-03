@@ -29,8 +29,6 @@ public class ReviewsService {
         Reviews existingReview = reviewsRepository.findById(reviewId)
                 .orElseThrow(() -> new RuntimeException("Review not found with id: " + reviewId));
 
-        existingReview.setUserId(updatedReview.getUserId());
-        existingReview.setItemId(updatedReview.getItemId());
         existingReview.setRating(updatedReview.getRating());
         existingReview.setComment(updatedReview.getComment());
 
