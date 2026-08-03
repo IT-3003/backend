@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import com.threefour.backend.user.UserRepository;
 import com.threefour.backend.branch.BranchRepository;
 import com.threefour.backend.item.ItemRepository;
+import com.threefour.backend.payment.PaymentRepository;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 
@@ -16,14 +18,19 @@ public class OrderService {
     private final UserRepository userRepository;
     private final BranchRepository branchRepository;
     private final ItemRepository itemRepository;
+    private final PaymentRepository paymentRepository;
+    private final OrderItemRepository orderItemRepository;
 
 
     public OrderService(OrderRepository orderRepository, UserRepository userRepository,
-                        BranchRepository branchRepository, ItemRepository itemRepository) {
+                        BranchRepository branchRepository, ItemRepository itemRepository,
+                        PaymentRepository paymentRepository, OrderItemRepository orderItemRepository) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.branchRepository = branchRepository;
         this.itemRepository = itemRepository;
+        this.paymentRepository = paymentRepository;
+        this.orderItemRepository = orderItemRepository;
     }
 
 
@@ -71,10 +78,14 @@ public class OrderService {
     }
 
 
+    @Transactional
     public void deleteOrder(int id) {
         if (!orderRepository.existsById(id)) {
             throw new RuntimeException("Order not found");
         }
+        orderRepository.clearPaymentReferenceForOrder(id);
+        paymentRepository.deleteByOrder_OrderId(id);
+        orderItemRepository.deleteByOrder_OrderId(id);
         orderRepository.deleteById(id);
     }
 }
