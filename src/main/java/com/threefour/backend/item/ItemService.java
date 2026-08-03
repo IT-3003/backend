@@ -9,15 +9,24 @@ import java.util.List;
 
 
 
+import com.threefour.backend.promotion.PromotionRepository;
+import com.threefour.backend.order.OrderItemRepository;
+import org.springframework.transaction.annotation.Transactional;
+
 @Service
 public class ItemService {
 
 
     private final ItemRepository itemRepository;
+    private final PromotionRepository promotionRepository;
+    private final OrderItemRepository orderItemRepository;
 
 
-    public ItemService(ItemRepository itemRepository) {
+    public ItemService(ItemRepository itemRepository, PromotionRepository promotionRepository,
+                       OrderItemRepository orderItemRepository) {
         this.itemRepository = itemRepository;
+        this.promotionRepository = promotionRepository;
+        this.orderItemRepository = orderItemRepository;
     }
 
 
@@ -31,11 +40,13 @@ public class ItemService {
     }
 
 
+    @Transactional
     public void deleteItem(Long id) {
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Item not found with id: " + id));
 
-
+        promotionRepository.deleteByItem_ItemId(id);
+        orderItemRepository.deleteByProduct_ItemId(id);
         itemRepository.delete(item);
     }
 
