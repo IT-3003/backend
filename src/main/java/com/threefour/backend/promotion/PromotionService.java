@@ -2,21 +2,52 @@ package com.threefour.backend.promotion;
 
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 
 @Service
 public class PromotionService {
-    public final PromotionRepository anshuRepository;
 
+    private final PromotionRepository promotionRepository;
 
-    public PromotionService(PromotionRepository anshuRepository) {
-        this.anshuRepository = anshuRepository;
+    public PromotionService(PromotionRepository promotionRepository) {
+        this.promotionRepository = promotionRepository;
     }
-    public static String addnumbers(int a, int b) {
-    return "The sum is "+(a+b);
+
+    public List<Promotion> getAllPromotions() {
+        return promotionRepository.findAll();
     }
-    public Promotion saveAnshu(Promotion anshu){
-        // Directly pass the incoming object to the repository to be persisted
-        return anshuRepository.save(anshu);
+
+    public Promotion getPromotionById(int promotionId) {
+        return promotionRepository.findById(promotionId)
+                .orElseThrow(() -> new RuntimeException("Promotion not found with id: " + promotionId));
+    }
+
+    public Promotion savePromotion(Promotion promotion) {
+        return promotionRepository.save(promotion);
+    }
+
+    public Promotion updatePromotion(int promotionId, Promotion updatedPromotion) {
+
+        Promotion existingPromotion = promotionRepository.findById(promotionId)
+                .orElseThrow(() -> new RuntimeException("Promotion not found with id: " + promotionId));
+
+        existingPromotion.setPromotionName(updatedPromotion.getPromotionName());
+        existingPromotion.setDescription(updatedPromotion.getDescription());
+        existingPromotion.setDiscountValue(updatedPromotion.getDiscountValue());
+        existingPromotion.setDiscountType(updatedPromotion.getDiscountType());
+        existingPromotion.setStartDate(updatedPromotion.getStartDate());
+        existingPromotion.setEndDate(updatedPromotion.getEndDate());
+        existingPromotion.setItem(updatedPromotion.getItem());
+
+        return promotionRepository.save(existingPromotion);
+    }
+
+    public void deletePromotion(int promotionId) {
+
+        if (!promotionRepository.existsById(promotionId)) {
+            throw new RuntimeException("Promotion not found with id: " + promotionId);
+        }
+
+        promotionRepository.deleteById(promotionId);
     }
 }
-

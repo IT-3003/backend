@@ -1,11 +1,15 @@
-package com.threefour.backend.user;
+package com.threefour.backend.payment;
+
+
+
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+
 @Repository
 // Pass your Entity type (Product) and its ID type (Long) into the generic
-public interface UserRepository extends JpaRepository<User, Integer> {
+public interface PaymentRepository extends JpaRepository<Payment, Integer> {
     // Spring Boot automatically implements basic database methods here!
-    java.util.Optional<User> findByEmail(String email);
+    java.util.Optional<Payment> findByTransaction(String transaction);
 }
