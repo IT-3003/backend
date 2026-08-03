@@ -1,7 +1,6 @@
-
 package com.threefour.backend.payment;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.threefour.backend.order.Order;
 import com.threefour.backend.user.User;
@@ -27,7 +26,7 @@ public class Payment {
     @NotNull(message = "Order is required")
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Order order;
 
 
@@ -101,6 +100,12 @@ public class Payment {
     // Getters
     public int getPaymentId() { return paymentId; }
     public Order getOrder() { return order; }
+
+    @JsonProperty("orderId")
+    public Integer getOrderIdValue() {
+        return order != null ? order.getOrderId() : null;
+    }
+
     public User getUser() { return user; }
     public Double getAmount() { return amount; }
     public PaymentMethod getPaymentMethod() { return paymentMethod; }

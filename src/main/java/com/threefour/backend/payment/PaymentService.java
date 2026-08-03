@@ -77,14 +77,11 @@ public class PaymentService {
     }
 
 
-    // Soft Delete
     @Transactional
     public void deletePayment(int paymentId) {
         Payment existingPayment = getPaymentById(paymentId);
-
-
-        existingPayment.setActive(false);
-        paymentRepository.save(existingPayment);
+        orderRepository.clearPaymentReference(paymentId);
+        paymentRepository.delete(existingPayment);
     }
 
 
