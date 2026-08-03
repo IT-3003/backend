@@ -2,13 +2,25 @@ package com.threefour.backend.user;
 
 import org.springframework.stereotype.Service;
 
+import com.threefour.backend.order.OrderRepository;
+import com.threefour.backend.order.OrderItemRepository;
+import com.threefour.backend.payment.PaymentRepository;
+import org.springframework.transaction.annotation.Transactional;
+
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final OrderRepository orderRepository;
+    private final PaymentRepository paymentRepository;
+    private final OrderItemRepository orderItemRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, OrderRepository orderRepository,
+                       PaymentRepository paymentRepository, OrderItemRepository orderItemRepository) {
         this.userRepository = userRepository;
+        this.orderRepository = orderRepository;
+        this.paymentRepository = paymentRepository;
+        this.orderItemRepository = orderItemRepository;
     }
 
     // Convert User Entity to UserResponse DTO
@@ -104,10 +116,15 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
     }
 
+    @Transactional
     public void deleteUser(int id) {
         if (!userRepository.existsById(id)) {
             throw new RuntimeException("User not found with id: " + id);
         }
+        orderRepository.clearPaymentReferencesByUserId(id);
+        paymentRepository.deleteByUser_Id(id);
+        orderItemRepository.deleteByOrder_User_Id(id);
+        orderRepository.deleteByUser_Id(id);
         userRepository.deleteById(id);
     }
 
@@ -120,12 +137,12 @@ public class UserService {
     public UserResponse login(String email, String password) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Invalid credentials: User not found"));
-        
+
         // Simple plain-text password comparison
         if (user.getPasswordHash() == null || !user.getPasswordHash().equals(password)) {
             throw new RuntimeException("Invalid credentials: Passwords do not match");
         }
-        
+
         return convertToResponseDTO(user);
     }
 }
