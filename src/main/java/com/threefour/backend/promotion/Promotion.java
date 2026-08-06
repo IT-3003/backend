@@ -17,7 +17,6 @@ public class Promotion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Positive(message = "Promotion ID must be greater than 0")
     private int promotionId;
 
     @NotBlank(message = "Promotion name is required")
