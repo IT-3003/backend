@@ -88,4 +88,43 @@ public class OrderService {
         orderItemRepository.deleteByOrder_OrderId(id);
         orderRepository.deleteById(id);
     }
+
+    @Transactional
+    public Order updateOrder(int id, Order updatedOrder) {
+        Order existingOrder = orderRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found with ID: " + id));
+
+        updatedOrder.setOrderId(id);
+
+        if (updatedOrder.getUser() != null) {
+            com.threefour.backend.user.User managedUser = userRepository.findById(updatedOrder.getUser().getId())
+                    .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + updatedOrder.getUser().getId()));
+            updatedOrder.setUser(managedUser);
+        } else {
+            updatedOrder.setUser(existingOrder.getUser());
+        }
+
+        if (updatedOrder.getBranch() != null) {
+            com.threefour.backend.branch.Branch managedBranch = branchRepository.findById(updatedOrder.getBranch().getBranchId())
+                    .orElseThrow(() -> new IllegalArgumentException("Branch not found with ID: " + updatedOrder.getBranch().getBranchId()));
+            updatedOrder.setBranch(managedBranch);
+        } else {
+            updatedOrder.setBranch(existingOrder.getBranch());
+        }
+
+        if (updatedOrder.getOrderItems() != null) {
+            for (OrderItem item : updatedOrder.getOrderItems()) {
+                item.setOrder(updatedOrder);
+                if (item.getProduct() != null) {
+                    com.threefour.backend.item.Item managedItem = itemRepository.findById(item.getProduct().getItemId())
+                            .orElseThrow(() -> new IllegalArgumentException("Item not found with ID: " + item.getProduct().getItemId()));
+                    item.setProduct(managedItem);
+                }
+            }
+        } else {
+            updatedOrder.setOrderItems(existingOrder.getOrderItems());
+        }
+
+        return orderRepository.save(updatedOrder);
+    }
 }
